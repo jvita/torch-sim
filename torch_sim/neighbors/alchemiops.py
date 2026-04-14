@@ -52,6 +52,7 @@ if ALCHEMIOPS_AVAILABLE:
         cutoff: torch.Tensor,
         system_idx: torch.Tensor,
         self_interaction: bool = False,  # noqa: FBT001, FBT002
+        **kwargs,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """Compute neighbor lists using Alchemiops naive N^2 algorithm.
 
@@ -62,6 +63,8 @@ if ALCHEMIOPS_AVAILABLE:
             cutoff: Maximum distance (scalar tensor)
             system_idx: Tensor [n_atoms] indicating system assignment
             self_interaction: If True, include self-pairs
+            **kwargs: Additional keyword arguments forwarded to
+                ``_batch_naive_neighbor_list``.
 
         Returns:
             (mapping, system_mapping, shifts_idx)
@@ -79,6 +82,7 @@ if ALCHEMIOPS_AVAILABLE:
             cell=cell,
             pbc=pbc.to(torch.bool),
             return_neighbor_list=True,
+            **kwargs,
         )
 
         # Parse results: (neighbor_list, neighbor_ptr[, neighbor_list_shifts])

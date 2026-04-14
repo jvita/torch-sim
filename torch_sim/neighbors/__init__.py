@@ -50,6 +50,7 @@ def torchsim_nl(
     cutoff: torch.Tensor,
     system_idx: torch.Tensor,
     self_interaction: bool = False,  # noqa: FBT001, FBT002
+    **kwargs,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """Compute neighbor lists with automatic selection of best available implementation.
 
@@ -66,6 +67,9 @@ def torchsim_nl(
         cutoff: Maximum distance (scalar tensor) for considering atoms as neighbors
         system_idx: Tensor [n_atoms] indicating which system each atom belongs to
         self_interaction: If True, include self-pairs. Default: False
+        **kwargs: Additional keyword arguments forwarded to the underlying
+            neighbor list implementation (currently only ``alchemiops_nl_n2``
+            passes them through to ``_batch_naive_neighbor_list``).
 
     Returns:
         tuple containing:
@@ -84,7 +88,7 @@ def torchsim_nl(
     """
     if ALCHEMIOPS_AVAILABLE:
         return alchemiops_nl_n2(
-            positions, cell, pbc, cutoff, system_idx, self_interaction
+            positions, cell, pbc, cutoff, system_idx, self_interaction, **kwargs
         )
 
     if VESIN_TORCHSCRIPT_AVAILABLE:
